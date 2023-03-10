@@ -18,8 +18,13 @@ export const showError = (message) => {
   }
 };
 
-export const spinner = () => {
+export const cleanHTML = () => {
+  while (result.firstChild) {
+    result.removeChild(result.firstChild);
+  }
+};
 
+export const spinner = () => {
   cleanHTML();
 
   const divSpinner = document.createElement('div');
@@ -41,26 +46,16 @@ export const spinner = () => {
   `;
 
   result.appendChild(divSpinner);
+};
 
-
-} 
-
-export const kelvinToCelsius = (temp) => {
-  return parseInt(temp - 273.15);
-}
-
-export const cleanHTML = () => {
-  while (result.firstChild) {
-    result.removeChild(result.firstChild);
-  }
-}
+export const kelvinToCelsius = (temp) => parseInt((temp - 273.15), 10);
 
 export const showWeatherHTML = (data) => {
-  const { name, main: { temp, temp_max, temp_min } } = data
+  const { name, main: { temp, temp_max: tempMax, temp_min: tempMin } } = data;
 
   const celcius = kelvinToCelsius(temp);
-  const max = kelvinToCelsius(temp_max);
-  const min = kelvinToCelsius(temp_min);
+  const max = kelvinToCelsius(tempMax);
+  const min = kelvinToCelsius(tempMin);
 
   const resultDiv = document.createElement('div');
   resultDiv.classList.add('text-center', 'text-white');
@@ -80,15 +75,14 @@ export const showWeatherHTML = (data) => {
   const minTemp = document.createElement('p');
   minTemp.textContent = `Min: ${min} °C`;
   minTemp.classList.add('text-xl');
-  
+
   resultDiv.appendChild(nameCity);
   resultDiv.appendChild(actualTemp);
   resultDiv.appendChild(maxTemp);
   resultDiv.appendChild(minTemp);
 
-  result.appendChild(resultDiv)
-
-}
+  result.appendChild(resultDiv);
+};
 
 export const fetchAPI = (city, country) => {
   const idAPI = 'acb6df51d019cf23e3bc900846d7a07a';
@@ -104,7 +98,7 @@ export const fetchAPI = (city, country) => {
 
       if (data.cod === '404') {
         showError('city not found');
-        return
+        return;
       }
 
       showWeatherHTML(data);
